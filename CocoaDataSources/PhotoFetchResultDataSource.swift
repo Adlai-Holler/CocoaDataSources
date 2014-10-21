@@ -18,6 +18,10 @@ class PhotoFetchResultDataSource: AAPLDataSource, PHPhotoLibraryChangeObserver {
         PHPhotoLibrary.sharedPhotoLibrary().registerChangeObserver(self)
     }
     
+    deinit {
+        PHPhotoLibrary.sharedPhotoLibrary().unregisterChangeObserver(self)
+    }
+    
     func photoLibraryDidChange(changeInstance: PHChange!) {
         let details = changeInstance.changeDetailsForFetchResult(fetchResult)
         notifyBatchUpdate {

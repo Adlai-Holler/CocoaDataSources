@@ -13,11 +13,11 @@
 #import "AAPLComposedDataSource_Private.h"
 
 @interface AAPLComposedDataSource () <AAPLDataSourceDelegate>
-@property (nonatomic, retain) NSMutableArray *mappings;
-@property (nonatomic, retain) NSMapTable *dataSourceToMappings;
-@property (nonatomic, retain) NSMutableDictionary *globalSectionToMappings;
-@property (nonatomic, assign) NSUInteger sectionCount;
-@property (nonatomic, readonly) NSArray *dataSources;
+@property (nonatomic, strong) NSMutableArray *mappings;
+@property (nonatomic, strong) NSMapTable *dataSourceToMappings;
+@property (nonatomic, strong) NSMutableDictionary *globalSectionToMappings;
+@property (nonatomic) NSUInteger sectionCount;
+@property (nonatomic, strong, readonly) NSArray *dataSources;
 @property (nonatomic, strong) NSString *aggregateLoadingState;
 @end
 
@@ -202,93 +202,6 @@
     return _sectionCount;
 }
 
-- (AAPLLayoutSectionMetrics *)snapshotMetricsForSectionAtIndex:(NSInteger)sectionIndex
-{
-    AAPLComposedMapping *mapping = [self mappingForGlobalSection:sectionIndex];
-    NSInteger localSection = [mapping localSectionForGlobalSection:sectionIndex];
-    AAPLDataSource *dataSource = mapping.dataSource;
-
-    AAPLLayoutSectionMetrics *metrics = [dataSource snapshotMetricsForSectionAtIndex:localSection];
-    AAPLLayoutSectionMetrics *enclosingMetrics = [super snapshotMetricsForSectionAtIndex:sectionIndex];
-
-    [enclosingMetrics applyValuesFromMetrics:metrics];
-    return enclosingMetrics;
-}
-
-- (void)registerReusableViewsWithCollectionView:(UICollectionView *)collectionView
-{
-    [super registerReusableViewsWithCollectionView:collectionView];
-
-    for (AAPLDataSource *dataSource in self.dataSources)
-        [dataSource registerReusableViewsWithCollectionView:collectionView];
-}
-
-- (CGSize)collectionView:(UICollectionView *)collectionView sizeFittingSize:(CGSize)size forItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    AAPLComposedMapping *mapping = [self mappingForGlobalSection:indexPath.section];
-    UICollectionView *wrapper = [AAPLComposedViewWrapper wrapperForView:collectionView mapping:mapping];
-    AAPLDataSource *dataSource = mapping.dataSource;
-    NSIndexPath *localIndexPath = [mapping localIndexPathForGlobalIndexPath:indexPath];
-
-    return [dataSource collectionView:wrapper sizeFittingSize:size forItemAtIndexPath:localIndexPath];
-}
-
-- (BOOL)collectionView:(UICollectionView *)collectionView canEditItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    AAPLComposedMapping *mapping = [self mappingForGlobalSection:indexPath.section];
-    UICollectionView *wrapper = [AAPLComposedViewWrapper wrapperForView:collectionView mapping:mapping];
-    AAPLDataSource *dataSource = mapping.dataSource;
-    NSIndexPath *localIndexPath = [mapping localIndexPathForGlobalIndexPath:indexPath];
-
-    return [dataSource collectionView:wrapper canEditItemAtIndexPath:localIndexPath];
-}
-
-- (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    AAPLComposedMapping *mapping = [self mappingForGlobalSection:indexPath.section];
-    UICollectionView *wrapper = [AAPLComposedViewWrapper wrapperForView:collectionView mapping:mapping];
-    AAPLDataSource *dataSource = mapping.dataSource;
-    NSIndexPath *localIndexPath = [mapping localIndexPathForGlobalIndexPath:indexPath];
-
-    return [dataSource collectionView:wrapper canMoveItemAtIndexPath:localIndexPath];
-}
-
-- (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)destinationIndexPath
-{
-    // This is a bit simplistic: basically, if the move is between data sources, I'm going to assume the answer is NO. Subclasses can improve upon this if desired.
-    AAPLComposedMapping *fromMapping = [self mappingForGlobalSection:indexPath.section];
-    AAPLComposedMapping *toMapping = [self mappingForGlobalSection:destinationIndexPath.section];
-
-    if (toMapping != fromMapping)
-        return NO;
-
-    UICollectionView *wrapper = [AAPLComposedViewWrapper wrapperForView:collectionView mapping:fromMapping];
-    AAPLDataSource *dataSource = fromMapping.dataSource;
-
-    NSIndexPath *localFromIndexPath = [fromMapping localIndexPathForGlobalIndexPath:indexPath];
-    NSIndexPath *localToIndexPath = [fromMapping localIndexPathForGlobalIndexPath:destinationIndexPath];
-
-    return [dataSource collectionView:wrapper canMoveItemAtIndexPath:localFromIndexPath toIndexPath:localToIndexPath];
-}
-
-- (void)collectionView:(UICollectionView *)collectionView moveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)destinationIndexPath
-{
-    // This is a bit simplistic: basically, if the move is between data sources, I'm going to assume the answer is NO. Subclasses can improve upon this if desired.
-    AAPLComposedMapping *fromMapping = [self mappingForGlobalSection:indexPath.section];
-    AAPLComposedMapping *toMapping = [self mappingForGlobalSection:destinationIndexPath.section];
-
-    if (toMapping != fromMapping)
-        return;
-
-    UICollectionView *wrapper = [AAPLComposedViewWrapper wrapperForView:collectionView mapping:fromMapping];
-    AAPLDataSource *dataSource = fromMapping.dataSource;
-
-    NSIndexPath *localFromIndexPath = [fromMapping localIndexPathForGlobalIndexPath:indexPath];
-    NSIndexPath *localToIndexPath = [fromMapping localIndexPathForGlobalIndexPath:destinationIndexPath];
-
-    [dataSource collectionView:wrapper moveItemAtIndexPath:localFromIndexPath toIndexPath:localToIndexPath];
-}
-
 #pragma mark - AAPLContentLoading
 
 - (void)updateLoadingState
@@ -422,7 +335,7 @@
     [self notifyItemMovedFromIndexPath:globalFromIndexPath toIndexPaths:globalNewIndexPath];
 }
 
-- (void)dataSource:(AAPLDataSource *)dataSource didInsertSections:(NSIndexSet *)sections direction:(AAPLDataSourceSectionOperationDirection)direction
+- (void)dataSource:(AAPLDataSource *)dataSource didInsertSections:(NSIndexSet *)sections
 {
     AAPLComposedMapping *mapping = [self mappingForDataSource:dataSource];
 
@@ -433,10 +346,10 @@
         [globalSections addIndex:[mapping globalSectionForLocalSection:localSectionIndex]];
     }];
 
-    [self notifySectionsInserted:globalSections direction:direction];
+    [self notifySectionsInserted:globalSections];
 }
 
-- (void)dataSource:(AAPLDataSource *)dataSource didRemoveSections:(NSIndexSet *)sections direction:(AAPLDataSourceSectionOperationDirection)direction
+- (void)dataSource:(AAPLDataSource *)dataSource didRemoveSections:(NSIndexSet *)sections
 {
     AAPLComposedMapping *mapping = [self mappingForDataSource:dataSource];
 
@@ -447,7 +360,7 @@
         [globalSections addIndex:[mapping globalSectionForLocalSection:localSectionIndex]];
     }];
 
-    [self notifySectionsRemoved:globalSections direction:direction];
+    [self notifySectionsRemoved:globalSections];
 }
 
 - (void)dataSource:(AAPLDataSource *)dataSource didRefreshSections:(NSIndexSet *)sections
@@ -463,7 +376,7 @@
     [self updateMappings];
 }
 
-- (void)dataSource:(AAPLDataSource *)dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection direction:(AAPLDataSourceSectionOperationDirection)direction
+- (void)dataSource:(AAPLDataSource *)dataSource didMoveSection:(NSInteger)section toSection:(NSInteger)newSection
 {
     AAPLComposedMapping *mapping = [self mappingForDataSource:dataSource];
 
@@ -472,11 +385,10 @@
 
     [self updateMappings];
 
-    [self notifySectionMovedFrom:globalSection to:globalNewSection direction:direction];
+    [self notifySectionMovedFrom:globalSection to:globalNewSection];
 }
 
-- (void)dataSourceDidReloadData:(AAPLDataSource *)dataSource
-{
+- (void)dataSourceDidReloadData:(AAPLDataSource *)dataSource {
     [self notifyDidReloadData];
 }
 
@@ -484,14 +396,12 @@
     [self notifyWillBatchUpdate];
 }
 
-- (void)dataSource:(AAPLDataSource *)dataSource performBatchUpdate:(dispatch_block_t)update complete:(dispatch_block_t)complete
-{
+- (void)dataSource:(AAPLDataSource *)dataSource performBatchUpdate:(dispatch_block_t)update complete:(dispatch_block_t)complete {
     [self notifyBatchUpdate:update complete:complete];
 }
 
 /// If the content was loaded successfully, the error will be nil.
-- (void)dataSource:(AAPLDataSource *)dataSource didLoadContentWithError:(NSError *)error
-{
+- (void)dataSource:(AAPLDataSource *)dataSource didLoadContentWithError:(NSError *)error {
     BOOL showingPlaceholder = self.shouldDisplayPlaceholder;
     [self updateLoadingState];
 
@@ -505,8 +415,7 @@
 }
 
 /// Called just before a datasource begins loading its content.
-- (void)dataSourceWillLoadContent:(AAPLDataSource *)dataSource
-{
+- (void)dataSourceWillLoadContent:(AAPLDataSource *)dataSource {
     [self updateLoadingState];
     [self notifyWillLoadContent];
 }

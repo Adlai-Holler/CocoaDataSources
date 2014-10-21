@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>E1B58C7B-9A2D-458D-8D88-5AFC0735E2D0</string>
+	<key>IDESourceControlProjectName</key>
+	<string>CocoaDataSources</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>63ACD2BA1AD206FCC119202E389D48A57C089FA8</key>
+		<string>https://github.com/adly-holler/CocoaDataSources</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>CocoaDataSources/CocoaDataSources.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>63ACD2BA1AD206FCC119202E389D48A57C089FA8</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/adly-holler/CocoaDataSources</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>63ACD2BA1AD206FCC119202E389D48A57C089FA8</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>63ACD2BA1AD206FCC119202E389D48A57C089FA8</string>
+			<key>IDESourceControlWCCName</key>
+			<string>CocoaDataSources</string>
+		</dict>
+	</array>
+</dict>
+</plist>

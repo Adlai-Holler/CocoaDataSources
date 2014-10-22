@@ -9,6 +9,7 @@
 import UIKit
 import Photos
 
+public
 class PhotoFetchResultDataSource: AAPLDataSource, PHPhotoLibraryChangeObserver {
     
     let fetchResult: PHFetchResult
@@ -22,7 +23,7 @@ class PhotoFetchResultDataSource: AAPLDataSource, PHPhotoLibraryChangeObserver {
         PHPhotoLibrary.sharedPhotoLibrary().unregisterChangeObserver(self)
     }
     
-    func photoLibraryDidChange(changeInstance: PHChange!) {
+    public func photoLibraryDidChange(changeInstance: PHChange!) {
         let details = changeInstance.changeDetailsForFetchResult(fetchResult)
         notifyBatchUpdate {
             self.notifyItemsRemovedAtIndexPaths(self.indexPathsForIndices(details.removedIndexes))
@@ -34,12 +35,12 @@ class PhotoFetchResultDataSource: AAPLDataSource, PHPhotoLibraryChangeObserver {
         }
     }
     
-    override func itemAtIndexPath(indexPath: NSIndexPath!) -> AnyObject! {
+    override public func itemAtIndexPath(indexPath: NSIndexPath!) -> AnyObject! {
         assert(indexPath.section == 0)
         return fetchResult.objectAtIndex(indexPath.item)
     }
     
-    override func indexPathsForItem(item: AnyObject!) -> [AnyObject]! {
+    override public func indexPathsForItem(item: AnyObject!) -> [AnyObject]! {
         let idx = fetchResult.indexOfObject(item)
         if idx != Int(Foundation.NSNotFound) {
             return [NSIndexPath(forItem: idx, inSection: 0)]
@@ -48,7 +49,7 @@ class PhotoFetchResultDataSource: AAPLDataSource, PHPhotoLibraryChangeObserver {
         }
     }
     
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    override public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return fetchResult.count
     }
     

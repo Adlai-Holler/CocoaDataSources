@@ -1,7 +1,7 @@
 import CoreData
 
 // TODO: use generics when Swift compiler stops crashing
-class FetchedResultsDataSource: AAPLDataSource {
+public class FetchedResultsDataSource: AAPLDataSource {
     let fetchedResultsController: NSFetchedResultsController
     var bufferedChanges: [NSDictionary] = []
     var isFRCChanging = false
@@ -23,11 +23,11 @@ class FetchedResultsDataSource: AAPLDataSource {
         }
     }
     
-    override func itemAtIndexPath(indexPath: NSIndexPath!) -> AnyObject! {
+    override public func itemAtIndexPath(indexPath: NSIndexPath!) -> AnyObject! {
         return fetchedResultsController.objectAtIndexPath(indexPath)
     }
     
-    override func indexPathsForItem(item: AnyObject!) -> [AnyObject]!  {
+    override public func indexPathsForItem(item: AnyObject!) -> [AnyObject]!  {
         if let ip = fetchedResultsController.indexPathForObject(item) {
             return [ip]
         } else {
@@ -35,15 +35,15 @@ class FetchedResultsDataSource: AAPLDataSource {
         }
     }
 
-    override func removeItemAtIndexPath(indexPath: NSIndexPath!) {
+    override public func removeItemAtIndexPath(indexPath: NSIndexPath!) {
         fatalError("cannot remove item from fetched results data source")
     }
     
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    override public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return (fetchedResultsController.sections?[section] as? NSFetchedResultsSectionInfo)?.numberOfObjects ?? 0
     }
     
-    override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    override public func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return fetchedResultsController.sections?.count ?? 0
     }
     

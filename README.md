@@ -1,11 +1,7 @@
-CocoaDataSources
+CocoaDataSources [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 ================
 
 A cluster of data source classes for building Cocoa apps. This library includes modified versions of classes from Apple's 2014 WWDC code sample "Advanced User Interfaces Using Collection View".
-
-## Using CocoaDataSources
-
-Add the repository as a submodule of your application. Open your application project in Xcode, and drag `CocoaDataSources.xcodeproj` into the file tree of your application project. Go to your application project, General tab, scroll to the bottom, and add `CocoaDataSources.framework` under `Embedded Binaries`. Use `@import CocoaDataSources` to import the framework at the top of a source file in your project (say, the precompiled header).
 
 ## AAPLDataSource
 

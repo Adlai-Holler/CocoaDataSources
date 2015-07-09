@@ -2,10 +2,10 @@ import CoreData
 
 // TODO: use generics when Swift compiler stops crashing
 public class FetchedResultsDataSource: AAPLDataSource {
-    let fetchedResultsController: NSFetchedResultsController
+    public let fetchedResultsController: NSFetchedResultsController
     var bufferedChanges: [NSDictionary] = []
-    var isFRCChanging = false
-    init(fetchedResultsController: NSFetchedResultsController) {
+    private(set) public var isFRCChanging = false
+    public init(fetchedResultsController: NSFetchedResultsController) {
         fetchedResultsController.adly_generatesNotifications = true
         self.fetchedResultsController = fetchedResultsController
         super.init()

@@ -1,19 +1,11 @@
-//
-//  PhotoAlbumDataSource.swift
-//  SmartMail
-//
-//  Created by Adlai Holler on 9/29/14.
-//  Copyright (c) 2014 Bitlogica Inc. All rights reserved.
-//
 
 import UIKit
 import Photos
 
-public
-class PhotoFetchResultDataSource: AAPLDataSource, PHPhotoLibraryChangeObserver {
+public class PhotoFetchResultDataSource: AAPLDataSource, PHPhotoLibraryChangeObserver {
     
     let fetchResult: PHFetchResult
-    init(fetchResult: PHFetchResult) {
+    public init(fetchResult: PHFetchResult) {
         self.fetchResult = fetchResult
         super.init()
         PHPhotoLibrary.sharedPhotoLibrary().registerChangeObserver(self)

@@ -88,8 +88,8 @@ public class FetchedResultsDataSource: AAPLDataSource {
                 }
             } else {
                 // object change
-                let indexPath = userInfo[ADLYFetchedResultsControllerChangeIndexPathKey] as NSIndexPath!
-                let newIndexPath = userInfo[ADLYFetchedResultsControllerChangeNewIndexPathKey] as NSIndexPath!
+                let indexPath = userInfo[ADLYFetchedResultsControllerChangeIndexPathKey] as! NSIndexPath!
+                let newIndexPath = userInfo[ADLYFetchedResultsControllerChangeNewIndexPathKey] as!NSIndexPath!
                 switch type {
                 case .Insert: self.notifyItemsInsertedAtIndexPaths([newIndexPath])
                 case .Delete: self.notifyItemsRemovedAtIndexPaths([indexPath])

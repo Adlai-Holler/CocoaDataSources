@@ -4,8 +4,8 @@
  
  Abstract:
  
-  A subclass of AAPLDataSource which permits only one section but manages its items in an NSArray. This class will perform all the necessary updates to animate changes to the array of items if they are updated using -setItems:animated:.
-  
+ A subclass of AAPLDataSource which permits only one section but manages its items in an NSArray. This class will perform all the necessary updates to animate changes to the array of items if they are updated using -setItems:animated:.
+ 
  */
 
 #import "AAPLDataSource.h"
@@ -19,4 +19,6 @@
 /// Set the items with optional animation. By default, setting the items is not animated.
 - (void)setItems:(NSArray *)items animated:(BOOL)animated;
 
+/// equivalent to mutableArrayValueForKey:"items"
+- (NSMutableArray *)mutableItems;
 @end

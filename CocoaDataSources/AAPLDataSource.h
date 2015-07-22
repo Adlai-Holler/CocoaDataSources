@@ -36,6 +36,9 @@
 /** Returns the first index path for the given item */
 - (NSIndexPath *)indexPathForItem:(id)item;
 
+- (NSInteger)numberOfItemsInSection:(NSInteger)section;
+- (NSArray *)arrayForSection:(NSInteger)section;
+
 /// Remove an item from the data source. This method should only be called as the result of a user action, such as tapping the "Delete" button in a swipe-to-delete gesture. Automatic removal of items due to outside changes should instead be handled by the data source itself — not the controller. Data sources must implement this to support swipe-to-delete.
 - (void)removeItemAtIndexPath:(NSIndexPath *)indexPath;
 

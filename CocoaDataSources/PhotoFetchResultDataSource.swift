@@ -25,14 +25,16 @@ class PhotoFetchResultDataSource: AAPLDataSource, PHPhotoLibraryChangeObserver {
     
     public func photoLibraryDidChange(changeInstance: PHChange!) {
         let details = changeInstance.changeDetailsForFetchResult(fetchResult)
-        notifyBatchUpdate {
-            self.notifyItemsRemovedAtIndexPaths(self.indexPathsForIndices(details.removedIndexes))
-            self.notifyItemsInsertedAtIndexPaths(self.indexPathsForIndices(details.insertedIndexes))
-            self.notifyItemsRefreshedAtIndexPaths(self.indexPathsForIndices(details.changedIndexes))
-            details.enumerateMovesWithBlock {from, to in
-                self.notifyItemMovedFromIndexPath(NSIndexPath(forItem: from, inSection: 0), toIndexPaths: NSIndexPath(forItem: to, inSection: 0))
-            }
-        }
+		dispatch_async(dispatch_get_main_queue()) {
+			self.notifyBatchUpdate {
+				self.notifyItemsRemovedAtIndexPaths(self.indexPathsForIndices(details.removedIndexes))
+				self.notifyItemsInsertedAtIndexPaths(self.indexPathsForIndices(details.insertedIndexes))
+				self.notifyItemsRefreshedAtIndexPaths(self.indexPathsForIndices(details.changedIndexes))
+				details.enumerateMovesWithBlock {from, to in
+					self.notifyItemMovedFromIndexPath(NSIndexPath(forItem: from, inSection: 0), toIndexPaths: NSIndexPath(forItem: to, inSection: 0))
+				}
+			}
+		}
     }
     
     override public func itemAtIndexPath(indexPath: NSIndexPath!) -> AnyObject! {

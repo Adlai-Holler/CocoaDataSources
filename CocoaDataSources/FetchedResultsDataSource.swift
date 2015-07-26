@@ -2,10 +2,10 @@ import CoreData
 
 // TODO: use generics when Swift compiler stops crashing
 public class FetchedResultsDataSource: AAPLDataSource {
-    let fetchedResultsController: NSFetchedResultsController
+    public let fetchedResultsController: NSFetchedResultsController
     var bufferedChanges: [NSDictionary] = []
-    var isFRCChanging = false
-    init(fetchedResultsController: NSFetchedResultsController) {
+    private(set) public var isFRCChanging = false
+    public init(fetchedResultsController: NSFetchedResultsController) {
         fetchedResultsController.adly_generatesNotifications = true
         self.fetchedResultsController = fetchedResultsController
         super.init()
@@ -88,8 +88,8 @@ public class FetchedResultsDataSource: AAPLDataSource {
                 }
             } else {
                 // object change
-                let indexPath = userInfo[ADLYFetchedResultsControllerChangeIndexPathKey] as NSIndexPath!
-                let newIndexPath = userInfo[ADLYFetchedResultsControllerChangeNewIndexPathKey] as NSIndexPath!
+                let indexPath = userInfo[ADLYFetchedResultsControllerChangeIndexPathKey] as! NSIndexPath!
+                let newIndexPath = userInfo[ADLYFetchedResultsControllerChangeNewIndexPathKey] as!NSIndexPath!
                 switch type {
                 case .Insert: self.notifyItemsInsertedAtIndexPaths([newIndexPath])
                 case .Delete: self.notifyItemsRemovedAtIndexPaths([indexPath])

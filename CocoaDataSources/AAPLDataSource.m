@@ -53,6 +53,20 @@
     return [self indexPathsForItem:item].firstObject;
 }
 
+- (NSInteger)numberOfItemsInSection:(NSInteger)section {
+	return [self collectionView:nil numberOfItemsInSection:section];
+}
+
+- (NSArray *)arrayForSection:(NSInteger)section {
+	NSInteger count = [self numberOfItemsInSection:section];
+	NSMutableArray *result = [NSMutableArray arrayWithCapacity:count];
+	for (NSInteger i = 0; i < count; i++) {
+		NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:section];
+		[result addObject:[self itemAtIndexPath:indexPath]];
+	}
+	return result;
+}
+
 - (NSArray *)indexPathsForItem:(id)object
 {
     NSAssert(NO, @"Should be implemented by subclasses");

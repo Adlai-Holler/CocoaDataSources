@@ -15,13 +15,21 @@ public class PhotoFetchResultDataSource: AAPLDataSource, PHPhotoLibraryChangeObs
         PHPhotoLibrary.sharedPhotoLibrary().unregisterChangeObserver(self)
     }
     
-    public func photoLibraryDidChange(changeInstance: PHChange!) {
-        let details = changeInstance.changeDetailsForFetchResult(fetchResult)
+    public func photoLibraryDidChange(changeInstance: PHChange) {
+		guard let details = changeInstance.changeDetailsForFetchResult(fetchResult) else {
+			return
+		}
 		dispatch_async(dispatch_get_main_queue()) {
 			self.notifyBatchUpdate {
-				self.notifyItemsRemovedAtIndexPaths(self.indexPathsForIndices(details.removedIndexes))
-				self.notifyItemsInsertedAtIndexPaths(self.indexPathsForIndices(details.insertedIndexes))
-				self.notifyItemsRefreshedAtIndexPaths(self.indexPathsForIndices(details.changedIndexes))
+				if let removed = details.removedIndexes {
+					self.notifyItemsRemovedAtIndexPaths(self.indexPathsForIndices(removed))
+				}
+				if let inserted = details.insertedIndexes {
+					self.notifyItemsInsertedAtIndexPaths(self.indexPathsForIndices(inserted))
+				}
+				if let changed = details.changedIndexes {
+					self.notifyItemsRefreshedAtIndexPaths(self.indexPathsForIndices(changed))
+				}
 				details.enumerateMovesWithBlock {from, to in
 					self.notifyItemMovedFromIndexPath(NSIndexPath(forItem: from, inSection: 0), toIndexPaths: NSIndexPath(forItem: to, inSection: 0))
 				}

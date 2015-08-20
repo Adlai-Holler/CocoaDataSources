@@ -17,9 +17,13 @@ public class FetchedResultsDataSource: AAPLDataSource {
         nc.addObserver(self, selector: "controllerDidChangeSectionNote:", name: ADLYFetchedResultsControllerDidChangeSectionNotification, object: fetchedResultsController)
         nc.addObserver(self, selector: "controllerDidChangeObjectNote:", name: ADLYFetchedResultsControllerDidChangeObjectNotification, object: fetchedResultsController)
         var error: NSError?
-        fetchedResultsController.performFetch(&error)
-        if error != nil {
-            println("Error setting up FetchedResultsDataSource: error running fetch: \(error)")
+        do {
+            try fetchedResultsController.performFetch()
+        } catch let error1 as NSError {
+            error = error1
+        }
+        if let error = error {
+            print("Error setting up FetchedResultsDataSource: error running fetch: \(error)")
         }
     }
     
@@ -40,7 +44,7 @@ public class FetchedResultsDataSource: AAPLDataSource {
     }
     
     override public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return (fetchedResultsController.sections?[section] as? NSFetchedResultsSectionInfo)?.numberOfObjects ?? 0
+        return fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
     
     override public func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
